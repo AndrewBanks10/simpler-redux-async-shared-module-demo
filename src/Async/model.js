@@ -27,7 +27,9 @@ const sharedAsyncServiceFunctions = sharedAsyncGetServiceFunctions(reducerKey, {
 export const serviceFunctions = {
   ...sharedAsyncServiceFunctions,
   clear: store => sharedAsyncExternalServiceFunctions.setData(store, reducerKey, baseOptions, []),
-  componentDidMount: store => sharedAsyncServiceFunctions[makeSharedModuleKeyName('onGet', baseOptions)](store, reducerKey, baseOptions),
+  componentDidMount: function (store) { 
+    sharedAsyncServiceFunctions[makeSharedModuleKeyName('onGet', baseOptions)](store, reducerKey, baseOptions) 
+  },
   onConstructor: () => console.log('onConstructor'),
   componentWillUnmount: () => console.log('onComponentWillUnmount'),
   onRender: () => console.log('onRender')

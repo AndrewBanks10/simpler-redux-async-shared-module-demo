@@ -48,6 +48,9 @@ const operationSuccess = (store, reducerKey, options, data) => {
   }
   // Set the returned data in the reducerKey of the state and turn off active.
   store.setRState(reducerKey, { [makeDataKey(options)]: data, [makeActiveKey(options)]: false }, `onGet${options.id}`)
+  if (typeof options.onSuccess === 'function') {
+    options.onSuccess()
+  }
 }
 
 const operationFinished = (store, reducerKey, options) => {
@@ -55,6 +58,9 @@ const operationFinished = (store, reducerKey, options) => {
   loaderExternalServiceFunctions.unsetBusy()
   // Indicate to this state that an operation is not active.
   store.setRState(reducerKey, { [makeActiveKey(options)]: false }, `activeOff${options.id}`)
+  if (typeof options.onFail === 'function') {
+    options.onFail()
+  }
 }
 
 const operationFailed = (store, reducerKey, options) => {
