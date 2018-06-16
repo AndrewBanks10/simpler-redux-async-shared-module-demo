@@ -14,7 +14,7 @@ export const reducerKey = 'async'
 const asyncModuleId = 'AsyncModule'
 const baseOptions = { id: asyncModuleId }
 
-const initialState = {
+export const initialState = {
   ...sharedAsyncInitialState(baseOptions)
 }
 
@@ -34,5 +34,3 @@ export const serviceFunctions = {
   componentWillUnmount: () => console.log('onComponentWillUnmount'),
   onRender: () => console.log('onRender')
 }
-
-export const reducer = generalReducer(reducerKey, initialState)
