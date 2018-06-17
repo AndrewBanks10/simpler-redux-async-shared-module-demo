@@ -1,7 +1,4 @@
-import {
-  generalReducer,
-  makeSharedModuleKeyName
-} from 'simpler-redux'
+import { makeSharedModuleKeyName } from 'simpler-redux'
 import {
   getServiceFunctions as sharedAsyncGetServiceFunctions,
   getSelectors as sharedAsyncGetSelectors,
