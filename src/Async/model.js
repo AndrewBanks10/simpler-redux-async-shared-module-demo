@@ -31,3 +31,5 @@ export const serviceFunctions = {
   componentWillUnmount: () => console.log('onComponentWillUnmount'),
   onRender: () => console.log('onRender')
 }
+
+export const isDynamicReducer = true
