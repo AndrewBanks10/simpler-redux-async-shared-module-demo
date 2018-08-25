@@ -1,32 +1,31 @@
 import { makeSharedModuleKeyName } from 'simpler-redux'
-import {
-  getServiceFunctions as sharedAsyncGetServiceFunctions,
-  getSelectors as sharedAsyncGetSelectors,
-  getInitialState as sharedAsyncInitialState,
-  externalServiceFunctions as sharedAsyncExternalServiceFunctions
-} from '../SharedModel/Async'
+import * as sharedAsync from '../SharedModel/Async'
 
 export const reducerKey = 'async'
-// If this is changed then the view prop keys need to be changed. So don't change it once it is defined.
-const asyncModuleId = 'AsyncModule'
-const baseOptions = { id: asyncModuleId }
+
+const asyncModuleOptions = {
+  // If this is changed then the view prop keys need to be changed. So don't change it once it is defined.
+  id: 'AsyncModule',
+  filter: data => data
+}
 
 export const initialState = {
-  ...sharedAsyncInitialState(baseOptions)
+  ...sharedAsync.getInitialState(asyncModuleOptions)
 }
 
 export const selectors = {
-  ...sharedAsyncGetSelectors(reducerKey, baseOptions)
+  ...sharedAsync.getSelectors(reducerKey, asyncModuleOptions)
 }
 
-const filter = data => data
-const sharedAsyncServiceFunctions = sharedAsyncGetServiceFunctions(reducerKey, { ...baseOptions, filter })
+const runSharedFunction = (store, sharedFunctions, functionKey, asyncModuleOptions) =>
+  sharedFunctions[makeSharedModuleKeyName(functionKey, asyncModuleOptions)](store, reducerKey, asyncModuleOptions) 
+
+const sharedAsyncServiceFunctions = sharedAsync.getServiceFunctions(reducerKey, asyncModuleOptions)
+
 export const serviceFunctions = {
   ...sharedAsyncServiceFunctions,
-  clear: store => sharedAsyncExternalServiceFunctions.setData(store, reducerKey, baseOptions, []),
-  componentDidMount: function (store) { 
-    sharedAsyncServiceFunctions[makeSharedModuleKeyName('onGet', baseOptions)](store, reducerKey, baseOptions) 
-  },
+  clear: store => sharedAsync.externalServiceFunctions.setData(store, reducerKey, asyncModuleOptions, []),
+  componentDidMount: store => runSharedFunction(store, sharedAsyncServiceFunctions, 'onGet', asyncModuleOptions),
   onConstructor: () => console.log('onConstructor'),
   componentWillUnmount: () => console.log('onComponentWillUnmount'),
   onRender: () => console.log('onRender')

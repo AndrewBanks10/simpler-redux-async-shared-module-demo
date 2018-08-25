@@ -76,21 +76,22 @@ const operationBadStatus = (store, reducerKey, options, response) => {
 
 export const getServiceFunctions = (reducerKey, options) => {
   return {
-    [makeSharedModuleKeyName(onGetKey, options)]: store => {
+    [makeSharedModuleKeyName(onGetKey, options)]: async function(store) {
       operationStart(store, reducerKey, options)
-      fetch(url).then(response => {
-        if (response.ok) {
-          return response.json()
+      try {
+        const response = await fetch(url)
+        if (!response.ok) {
+          if (typeof options.badStatusCallback === 'function') {
+            return operationBadStatus(store, reducerKey, options, response)
+          } else {
+            throw new Error('Error')
+          }
         }
-        if (typeof options.badStatusCallback === 'function') {
-          return operationBadStatus(store, reducerKey, options, response)
-        }
-        throw new Error('Error')
-      }).then(data =>
+        const data = await response.json()
         operationSuccess(store, reducerKey, options, data)
-      ).catch(() =>
+      } catch (_ex) {
         operationFailed(store, reducerKey, options)
-      )
+      }
     }
   }
 }
